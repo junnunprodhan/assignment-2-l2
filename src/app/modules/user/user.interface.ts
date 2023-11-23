@@ -16,7 +16,7 @@ export type Orders={
 }
 
 export type  User={
-    "userId"?: "number",
+    "userId"?: "string",
     "username": "string",
     "password": "string",
     "fullName": FullName,
