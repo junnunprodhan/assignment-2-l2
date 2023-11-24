@@ -2,8 +2,8 @@ import { Schema, model, connect } from 'mongoose';
 import { Address, FullName, Orders, User } from './user/user.interface';
 
 const fullNameSchema= new Schema<FullName>({ 
-    firstName:{type:String, required:[true,'first name is required']},
-    lastName:{type:String, required:[true,'last name is required']}
+    firstName:{type:String,trim:true, required:[true,'first name is required']},
+    lastName:{type:String, trim:true, required:[true,'last name is required']}
 });
 
 const addressSchema =new Schema<Address>({

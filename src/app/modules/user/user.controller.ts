@@ -1,11 +1,29 @@
 import { Request, Response } from 'express';
 import { userServices } from './user.service';
+import Joi from 'joi';
+import userValidationSchema from './user.validator';
+
 
 
 const createUser = async (req: Request, res: Response) => {
   try {
+    // using joi validation
+
+   
+      
+
+    // end joi
     const { user: userData } = req.body;
+    const {error,value}=userValidationSchema.validate(userData);
     const result = await userServices.createUserIntoDB(userData);
+    if(error){
+        res.status(500).json({
+            success: false,
+            message: error.message || 'User not found',
+            error: error.details,
+          });
+    }
+    
 
     res.status(200).json({
       success: true,
