@@ -13,7 +13,7 @@ const createUserIntoDB = async (user: User) => {
   };
 
   const getSingleUserFromDB = async (id:string) => {
-    const result = await UserModel.findOne({ id });
+    const result = await UserModel.findOne({userId: id });
     return result;
   };
 

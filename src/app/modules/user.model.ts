@@ -2,14 +2,14 @@ import { Schema, model, connect } from 'mongoose';
 import { Address, FullName, Orders, User } from './user/user.interface';
 
 const fullNameSchema= new Schema<FullName>({ 
-    firstName:{type:String, required:true},
-    lastName:{type:String, required:true}
+    firstName:{type:String, required:[true,'first name is required']},
+    lastName:{type:String, required:[true,'last name is required']}
 });
 
 const addressSchema =new Schema<Address>({
-    street:{type:String, required:true},
-    city:{type:String, required:true},
-    country:{type:String, required:true}
+    street:{type:String, required:[true,'street name is required']},
+    city:{type:String, required:[true,'city name is required']},
+    country:{type:String, required:[true,'country name is required']}
 });
 
 // const ordersSchema =new Schema<Orders>({
@@ -22,15 +22,15 @@ const userSchema = new Schema<User>({
     userId:{type:Number, unique:true},
     username:{type:String,unique:true},
     password:{type:String},
-    fullName: fullNameSchema,
+    fullName: {type:fullNameSchema,required:true},
     age:{type:Number},
-    email: { type: String, required: true,unique:true },
+    email: { type: String, required: [true,'email is required'],unique:true },
     isActive:{type:Boolean},
     hobbies: {
         type: [String],
         default: [],
       },
-    address:addressSchema,
+    address:{type:addressSchema, required:[true,'address is required']},
     orders:{
         productName:{type:String},
         price:{type:Number},

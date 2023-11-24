@@ -43,8 +43,12 @@ const getUsers = async (req: Request, res: Response) => {
         message: 'User fetched successfully!',
         data: result,
       });
-    } catch (err) {
-      console.log(err);
+    } catch (err:any) {
+        res.status(404).json({
+            success: false,
+            message: err.message || 'User not found',
+            error: err,
+          });
     }
   };
 
