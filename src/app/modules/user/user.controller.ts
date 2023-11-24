@@ -15,23 +15,26 @@ const createUser = async (req: Request, res: Response) => {
     // end joi
     const { user: userData } = req.body;
     const {error,value}=userValidationSchema.validate(userData);
-    const result = await userServices.createUserIntoDB(userData);
-    if(error){
-        res.status(500).json({
-            success: false,
-            message: error.message || 'User not found',
-            error: error.details,
-          });
-    }
+    const result = await userServices.createUserIntoDB(value);
+    // if(error){
+    //     res.status(404).json({
+    //         success: false,
+    //         message: error.message || 'User not found',
+    //         error: error.details,
+    //       });
+    // }
     
-
     res.status(200).json({
       success: true,
       message: 'User is created succesfully',
       data: result,
     });
-  } catch (err) {
-    console.log(err);
+  } catch (err:any) {
+    res.status(404).json({
+        success: false,
+        message: err.message || 'User not found',
+        error: err
+      });
   }
 };
 
