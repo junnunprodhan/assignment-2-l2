@@ -35,7 +35,7 @@ const createUserIntoDB = async (userData: TUser) => {
             _id: 0,
             username: 1,
             fullName: {
-              $concat: ['$fullName.firstName', ' ', '$fullName.lastName'] // Concatenate first and last names
+              $concat: ['$fullName.firstName', ' ', '$fullName.lastName'] 
             },
             age: 1,
             email: 1,
@@ -59,11 +59,26 @@ const createUserIntoDB = async (userData: TUser) => {
     const result = await User.deleteOne({userId: id });
     return result;
   };
+// 
+const updateUserFromDB = async (id:string, updatedData:any) => {
+   
+    try {
+      const updatedUser = await User.findOneAndUpdate(
+        { userId: id },
+        updatedData,
+        { upsert: true,new:true }
+      );
+      return updatedUser;
+    } catch (error) {
+      throw error;
+    }
+  };
 
 
 export const userServices= {
     createUserIntoDB,
     getAllUsersFromDB,
     getSingleUserFromDB,
-    deleteSingleUserFromDB
+    deleteSingleUserFromDB,
+    updateUserFromDB
 }

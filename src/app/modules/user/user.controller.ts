@@ -1,33 +1,21 @@
 import { Request, Response } from 'express';
 import { userServices } from './user.service';
-import Joi from 'joi';
 import userValidationSchema from './user.validator';
+import { AnyKeys } from 'mongoose';
+
 
 
 
 const createUser = async (req: Request, res: Response) => {
   try {
-    // using joi validation
-
-   
-      
-
-    // end joi
     const { user: userData } = req.body;
     const {error,value}=userValidationSchema.validate(userData);
     const result = await userServices.createUserIntoDB(value);
-// using aggregate
-
-
-// aggregate end
  
     res.status(200).json({
       success: true,
       message: 'User is created succesfully',
       data: result,
-// fill filtering
-
-// fill filtering end
 
     });
   } catch (err:any) {
@@ -94,10 +82,36 @@ const deleteSingleUser = async (req: Request, res: Response) => {
           });
     }
   };
+// update user
+const updateUser = async (req: Request, res: Response) => {
+    const { userId } = req.params;
+    const updatedData = req.body;
+    try {
+      const updatedUser = await userServices.updateUserFromDB(userId, updatedData);
+    
+      res.status(200).json({
+        success: true,
+        message: 'User updated successfully!',
+        data: updatedUser,
+        
+      });
+    } catch (error:any) {
+      res.status(404).json({
+        success: false,
+        message: 'Error updating user',
+        error: error.message,
+      });
+    }
+
+  };
+
+// update user end
 
 export const UserControllers={
     createUser,
     getUsers,
     getSingleUser,
-    deleteSingleUser
+    deleteSingleUser,
+    updateUser
+    
 }
