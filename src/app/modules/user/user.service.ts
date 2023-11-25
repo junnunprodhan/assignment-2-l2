@@ -5,7 +5,7 @@ import { TUser } from "./user.interface";
 const createUserIntoDB = async (userData: TUser) => {
     // const result = await UserModel.create(user);
     const user = new User(userData)
-    if(await user.isUserExists(userData.userId)){
+    if(await user.isUserExists(userData.us)){
         throw new Error('User already exists')
     }
     // user.isUserExists
@@ -24,8 +24,16 @@ const createUserIntoDB = async (userData: TUser) => {
   };
 
 
+
+  const deleteSingleUserFromDB = async (id:string) => {
+    const result = await User.deleteOne({userId: id });
+    return result;
+  };
+
+
 export const userServices= {
     createUserIntoDB,
     getAllUsersFromDB,
-    getSingleUserFromDB
+    getSingleUserFromDB,
+    deleteSingleUserFromDB
 }
