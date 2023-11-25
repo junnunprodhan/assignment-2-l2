@@ -16,11 +16,19 @@ const createUser = async (req: Request, res: Response) => {
     const { user: userData } = req.body;
     const {error,value}=userValidationSchema.validate(userData);
     const result = await userServices.createUserIntoDB(value);
+// using aggregate
+
+
+// aggregate end
  
     res.status(200).json({
       success: true,
       message: 'User is created succesfully',
       data: result,
+// fill filtering
+
+// fill filtering end
+
     });
   } catch (err:any) {
     res.status(404).json({

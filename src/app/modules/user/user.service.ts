@@ -3,19 +3,49 @@ import { TUser } from "./user.interface";
 
 
 const createUserIntoDB = async (userData: TUser) => {
-    // const result = await UserModel.create(user);
     const user = new User(userData)
     if(await user.isUserExists(userData.userId)){
         throw new Error('User already exists')
     }
-    // user.isUserExists
-    const result = await user.save()
+  
+    const userSave = await user.save();
+    const result = await User.aggregate([
+        {
+          $project: {
+            _id: 0, 
+            username: 1,
+            fullName: {
+              $concat: ['$fullName.firstName', ' ', '$fullName.lastName']
+            },
+            age: 1,
+            email: 1,
+            address: '$address'
+          }
+        }
+      ]);
+    
     return result;
   };
 
   const getAllUsersFromDB = async () => {
-    const result = await User.find();
+    const allUsers = await User.find();
+    const result = await User.aggregate([
+        {
+          $project: {
+            _id: 0,
+            username: 1,
+            fullName: {
+              $concat: ['$fullName.firstName', ' ', '$fullName.lastName'] // Concatenate first and last names
+            },
+            age: 1,
+            email: 1,
+            address: '$address'
+          }
+        }
+      ]);
+    
     return result;
+    
   };
 
   const getSingleUserFromDB = async (id:string) => {
