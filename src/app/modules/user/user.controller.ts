@@ -16,14 +16,7 @@ const createUser = async (req: Request, res: Response) => {
     const { user: userData } = req.body;
     const {error,value}=userValidationSchema.validate(userData);
     const result = await userServices.createUserIntoDB(value);
-    // if(error){
-    //     res.status(404).json({
-    //         success: false,
-    //         message: error.message || 'User not found',
-    //         error: error.details,
-    //       });
-    // }
-    
+ 
     res.status(200).json({
       success: true,
       message: 'User is created succesfully',
