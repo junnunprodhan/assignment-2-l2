@@ -1,5 +1,7 @@
 import { Schema, model, connect } from 'mongoose';
 import { TAddress, TFullName, TOrders, TUser, UserMethods, UserModel } from './user/user.interface';
+import bcrypt from 'bcrypt';
+import config from '../config';
 
 const fullNameSchema= new Schema<TFullName>({ 
     firstName:{type:String,trim:true, required:[true,'first name is required']},
@@ -37,6 +39,23 @@ const userSchema = new Schema<TUser,UserModel,UserMethods>({
         quantity:{type:Number}
     }
   });
+
+//   pre hook save data
+
+userSchema.pre('save', async function(next) {
+    const user:any = this;
+    user.password = await bcrypt.hash(
+      user.password,
+     Number(config.bcrypt_salt),
+     );
+     next()
+  });
+
+// post hok after save data
+userSchema.post('save',function(doc:any,next){
+    doc.password=""
+    next()
+})
 
 userSchema.methods.isUserExists = async function (userId:string){
     const existingUser =await User.findOne({userId})
