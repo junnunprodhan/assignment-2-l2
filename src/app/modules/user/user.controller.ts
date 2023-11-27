@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { userServices } from './user.service';
 import userValidationSchema from './user.validator';
-import { AnyKeys } from 'mongoose';
+
 
 
 
@@ -105,13 +105,63 @@ const updateUser = async (req: Request, res: Response) => {
 
   };
 
+
 // update user end
+
+const updateOrders = async (req: Request, res: Response) => {
+  const { userId } = req.params;
+  const updatedOrdersData = req.body
+  
+  try {
+    const updatedOrders = await userServices.updateOrderFromDB(userId, updatedOrdersData);
+  
+    res.status(200).json({
+      success: true,
+      message: 'Order created successfully!!',
+      data: updatedOrders,
+      
+    });
+  } catch (error:any) {
+    res.status(404).json({
+      success: false,
+      message: 'Error updating user',
+      error: error.message,
+    });
+  }
+
+};
+
+// get orders
+
+const getOrders = async (req: Request, res: Response) => {
+  try {
+    const { userId } = req.params;
+
+    const result = await userServices.getSingleUserFromDB(userId);
+
+
+    res.status(200).json({
+      success: true,
+      message: 'User fetched successfully!',
+      data: result?.orders,
+    });
+  } catch (err:any) {
+      res.status(404).json({
+          success: false,
+          message: err.message || 'User not found',
+          error: err,
+        });
+  }
+};
+
 
 export const UserControllers={
     createUser,
     getUsers,
     getSingleUser,
     deleteSingleUser,
-    updateUser
+    updateUser,
+    updateOrders,
+    getOrders
     
 }

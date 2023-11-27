@@ -74,11 +74,35 @@ const updateUserFromDB = async (id:string, updatedData:any) => {
     }
   };
 
+  // update orders
+  const updateOrderFromDB = async (id:string, updatedOrdersData:any) => {
+   console.log(updatedOrdersData)
+    try {
+      const updateOrders = await User.findOneAndUpdate(
+        { userId: id },
+        updatedOrdersData,
+        { upsert: true,new:true }
+      );
+      return updateOrders;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  // update orders
+  const getOrdersFromDB= async (id:string) => {
+    const result = await User.findOne({userId: id });
+    return result;
+  };
+
+
 
 export const userServices= {
     createUserIntoDB,
     getAllUsersFromDB,
     getSingleUserFromDB,
     deleteSingleUserFromDB,
-    updateUserFromDB
+    updateUserFromDB,
+    updateOrderFromDB,
+    getOrdersFromDB
 }
