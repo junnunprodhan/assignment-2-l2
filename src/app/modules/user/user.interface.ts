@@ -28,7 +28,7 @@ export type  TUser={
         "string",
     ],
     "address":TAddress,
-    "orders":TOrders  
+    "orders":TOrders 
 }
 
 export type UserMethods ={

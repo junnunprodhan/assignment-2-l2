@@ -49,7 +49,18 @@ const createUserIntoDB = async (userData: TUser) => {
   };
 
   const getSingleUserFromDB = async (id:string) => {
-    const result = await User.findOne({userId: id });
+    const userData = await User.findOne({userId: id });
+    const result = {
+      userId: userData?.userId,
+      username: userData?.username,
+      fullName: userData?.fullName,
+      age: userData?.age,
+      email: userData?.email,
+      isActive: userData?.isActive,
+      hobbies: userData?.hobbies,
+      address: userData?.address,
+    };
+
     return result;
   };
 
@@ -61,7 +72,6 @@ const createUserIntoDB = async (userData: TUser) => {
   };
 // 
 const updateUserFromDB = async (id:string, updatedData:any) => {
-   
     try {
       const updatedUser = await User.findOneAndUpdate(
         { userId: id },
@@ -76,25 +86,46 @@ const updateUserFromDB = async (id:string, updatedData:any) => {
 
   // update orders
   const updateOrderFromDB = async (id:string, updatedOrdersData:any) => {
-   console.log(updatedOrdersData)
     try {
+    
       const updateOrders = await User.findOneAndUpdate(
         { userId: id },
         updatedOrdersData,
-        { upsert: true,new:true }
+        {new:true,upsert:true }
       );
+      console.log(updatedOrdersData)
       return updateOrders;
     } catch (error) {
       throw error;
     }
   };
 
-  // update orders
+  // get orders start
   const getOrdersFromDB= async (id:string) => {
     const result = await User.findOne({userId: id });
     return result;
   };
 
+  // get orders total
+const getOrdersTotalFromDB = async (id:string) => {
+  try {
+      const result = await User.findOne({ userId: id });
+      const data:any= result?.orders;
+      
+      if ( !data || !Array.isArray(data)) {
+          throw new Error('No orders found or orders is not an array');
+      }
+
+      const totalPrice =data.reduce((total, order) => {
+          return total + (order.price * order.quantity);
+      }, 0);
+
+      return totalPrice;
+  } catch (error:any) {
+      console.error("Error:", error.message);
+      return 0; 
+  }
+};
 
 
 export const userServices= {
@@ -104,5 +135,6 @@ export const userServices= {
     deleteSingleUserFromDB,
     updateUserFromDB,
     updateOrderFromDB,
-    getOrdersFromDB
+    getOrdersFromDB,
+    getOrdersTotalFromDB
 }

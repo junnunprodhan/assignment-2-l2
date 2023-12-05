@@ -8,7 +8,8 @@ import userValidationSchema from './user.validator';
 
 const createUser = async (req: Request, res: Response) => {
   try {
-    const { user: userData } = req.body;
+
+    const userData =req.body
     const {error,value}=userValidationSchema.validate(userData);
     const result = await userServices.createUserIntoDB(value);
  
@@ -88,11 +89,21 @@ const updateUser = async (req: Request, res: Response) => {
     const updatedData = req.body;
     try {
       const updatedUser = await userServices.updateUserFromDB(userId, updatedData);
-    
+      const result = {
+        userId: updatedUser?.userId,
+        username: updatedUser?.username,
+        fullName: updatedUser?.fullName,
+        age: updatedUser?.age,
+        email: updatedUser?.email,
+        isActive:updatedUser?.isActive,
+        hobbies: updatedUser?.hobbies,
+        address: updatedUser?.address,
+      };
+      console.log(result)
       res.status(200).json({
         success: true,
         message: 'User updated successfully!',
-        data: updatedUser,
+        data: result,
         
       });
     } catch (error:any) {
@@ -114,11 +125,10 @@ const updateOrders = async (req: Request, res: Response) => {
   
   try {
     const updatedOrders = await userServices.updateOrderFromDB(userId, updatedOrdersData);
-  
     res.status(200).json({
       success: true,
       message: 'Order created successfully!!',
-      data: updatedOrders,
+      data: null,
       
     });
   } catch (error:any) {
@@ -137,13 +147,31 @@ const getOrders = async (req: Request, res: Response) => {
   try {
     const { userId } = req.params;
 
-    const result = await userServices.getSingleUserFromDB(userId);
-
-
+    const result = await userServices.getOrdersFromDB(userId);
     res.status(200).json({
       success: true,
       message: 'Order fetched successfully!!',
       data: result?.orders,
+    });
+  } catch (err:any) {
+      res.status(404).json({
+          success: false,
+          message: err.message || 'Order not found',
+          error: err,
+        });
+  }
+};
+
+// get orders total
+const getOrdersTotal = async (req: Request, res: Response) => {
+  
+  try {
+    const { userId } = req.params;
+    const result = await userServices.getOrdersTotalFromDB(userId);
+    res.status(200).json({
+      success: true,
+      message: 'Total price calculated successfully!',
+      data:result,
     });
   } catch (err:any) {
       res.status(404).json({
@@ -162,6 +190,7 @@ export const UserControllers={
     deleteSingleUser,
     updateUser,
     updateOrders,
-    getOrders
+    getOrders,
+    getOrdersTotal
     
 }
